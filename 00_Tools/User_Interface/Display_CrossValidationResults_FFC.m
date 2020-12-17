@@ -40,7 +40,7 @@ function Display_CrossValidationResults_FFC(CV_Parameters,CV_Results)
 % Revisions:
 % 2020-Mar-10   function was created
 
-%% Show Test Parameters and Results
+%% Show Cross-Validation Parameters and Results
 GUI_MainEditBox_Update_FFC(false,sprintf('Decision Machine Type: %s',CV_Parameters.DM_Type));
 GUI_MainEditBox_Update_FFC(false,sprintf(' '));
 GUI_MainEditBox_Update_FFC(false,sprintf('Dataset Name: %s',CV_Parameters.Dataset_FileName));
@@ -48,6 +48,7 @@ GUI_MainEditBox_Update_FFC(false,sprintf('Dataset Name: %s',CV_Parameters.Datase
 GUI_MainEditBox_Update_FFC(false,sprintf(' '));
 GUI_MainEditBox_Update_FFC(false,sprintf('------------ Cross-Validation Parameters -------------'));
 GUI_MainEditBox_Update_FFC(false,sprintf('K = %d',CV_Parameters.K));
+GUI_MainEditBox_Update_FFC(false,sprintf('Start/End of Train/Validation/Test = [%g %g]',CV_Parameters.TVTIndex(1),CV_Parameters.TVTIndex(2)));
 GUI_MainEditBox_Update_FFC(false,sprintf('[Train Validation] = [%g %g]',CV_Parameters.TV(1),CV_Parameters.TV(2)));
 GUI_MainEditBox_Update_FFC(false,sprintf('Weighting Method: %s',CV_Parameters.Weighting_Method));
 
@@ -103,7 +104,7 @@ switch CV_Parameters.DM_Type
         
     case 'SVM'
         GUI_MainEditBox_Update_FFC(false,sprintf('Best BoxConstraint: %g',CV_Results.BestBoxConstraint));
-        GUI_MainEditBox_Update_FFC(false,sprintf('Best KernelScale_MeshGrid: %g',CV_Parameters.BestKernelScale));
+        GUI_MainEditBox_Update_FFC(false,sprintf('Best KernelScale: %g',CV_Parameters.BestKernelScale));
         
     case 'Random Forest'
         GUI_MainEditBox_Update_FFC(false,sprintf('Best NumTrees: %d',CV_Results.BestNumTrees));

@@ -35,7 +35,7 @@ global DecisionMachine_FFC_Name_TextBox DecisionMachine_FFC_Validation_TextBox V
 global TestResults_FFC_Name_TextBox View_TestResults_PushButton_FFC
 global CrossValidationResults_FFC_Name_TextBox View_CrossValidationResults_PushButton_FFC
 
-ver = '1.1';
+ver = '1.2';
 
 currentFolder = which('Main_FFC.m');
 currentFolder(strfind(currentFolder,'Main_FFC.m')-1:end) = [];
@@ -258,7 +258,7 @@ switch get(source,'Label')
         ErrorMsg = Script_t_SNE_Visualization_FFC;
         
     case 'Box Plot of Features'
-        ErrorMsg = Script_Box_Plot_of_Features;
+        ErrorMsg = Script_Box_Plot_of_Features_FFC;
         
     case 'Filter: Pearson Correlation Coefficient'
         ErrorMsg = Script_FeatureSelection_with_PearsonCorrelationCoefficient_FFC;
