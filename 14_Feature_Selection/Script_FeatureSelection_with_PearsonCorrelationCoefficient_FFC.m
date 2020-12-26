@@ -34,6 +34,12 @@ if isempty(Dataset_FFC)
     return;
 end
 
+%% Check that Dataset has at least two classes
+if length(ClassLabels_FFC)<2
+    ErrorMsg = 'At least two classes should be presented.';
+    return;
+end
+
 %% ###################################################################################################
 %% --------------------------------------------------------------------------------------------------#
 %% -------------------------------------- Function Main Body ----------------------------------------#

@@ -43,7 +43,7 @@ Packet_Pos = Packet_Pos(1:j0);
 %% Disregard BOF and EOF
 Disregard_Length_BOF = FileLength*DisregardBOF;
 Disregard_Length_EOF = FileLength*DisregardEOF;
-Packet_Pos = Packet_Pos(Packet_Pos>Disregard_Length_BOF & Packet_Pos<=(Packet_Pos(end)-Disregard_Length_EOF));
+Packet_Pos = Packet_Pos(Packet_Pos>Disregard_Length_BOF & Packet_Pos<=(FileLength-Disregard_Length_EOF));
 
 %% No fragments can be taken
 Frgs = cell(1,MaxFragment);
