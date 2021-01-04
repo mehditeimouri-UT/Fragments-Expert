@@ -4,7 +4,7 @@ function ErrorMsg = Script_SequentialForward_FeatureSelection_FFC
 %   (1) By using a greedy search algorithm it attempts to find the “optimal” feature subset by iteratively selecting features
 %       based on the LDA classifier performance.
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 %
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -24,11 +24,13 @@ function ErrorMsg = Script_SequentialForward_FeatureSelection_FFC
 %
 % Revisions:
 % 2020-Jun-10   function was created
-% 2020-Oct-29   filename for saving the dataset is prompted before the process of feature selectiion begins  
+% 2020-Oct-29   filename for saving the dataset is prompted before the process of feature selectiion begins
+% 2021-Jan-03   Feature_Transfrom_FFC was included
 
 %% Initialization
 global ClassLabels_FFC FeatureLabels_FFC Dataset_FFC
 global Function_Handles_FFC Function_Labels_FFC Function_Select_FFC
+global Feature_Transfrom_FFC
 
 %% Check that Dataset is generated/loaded
 if isempty(Dataset_FFC)
@@ -46,7 +48,7 @@ end
 TV = [100 0]; % Train/Validation Percentages
 PartitionGenerateError = [true false];
 
-Param_Names = {'Weighting_Method','TVTIndex','K','feature_scaling_method'};
+Param_Names = {'Weighting_Method','TVTIndex','K','feature_scaling_FFCthod'};
 Param_Description = {'Weighting Method (balanced or uniform)',...
     'Start and End of the Train/Validation/Test in Dataset (1x2 vector with elements 0~1)',...
     'K value of K-Fold Cross-Validation (>=2 and <=10)',...
@@ -80,7 +82,7 @@ if Err
     return;
 end
 
-[Err,ErrMsg] = Check_Variable_Value_FFC(feature_scaling_method,'The method of feature scaling','possiblevalues',{'z-score','min-max','no scaling'});
+[Err,ErrMsg] = Check_Variable_Value_FFC(feature_scaling_FFCthod,'The method of feature scaling','possiblevalues',{'z-score','min-max','no scaling'});
 if Err
     ErrorMsg = sprintf('Process is aborted. %s',ErrMsg);
     return;
@@ -146,7 +148,7 @@ while(~isempty(AllFeatures))
             
             % Scaling Features
             Dataset = zeros(size(Dataset_FFC,1),length(Features)+2);
-            [Dataset(TrainValidationIndex,:),Scaling_Parameters] = Scale_Features_FFC(Dataset_FFC(TrainValidationIndex,[Features end-1:end]),feature_scaling_method);
+            [Dataset(TrainValidationIndex,:),Scaling_Parameters] = Scale_Features_FFC(Dataset_FFC(TrainValidationIndex,[Features end-1:end]),feature_scaling_FFCthod);
             Dataset(TestIndex,:) = Scale_Features_FFC(Dataset_FFC(TestIndex,[Features end-1:end]),Scaling_Parameters);
             
             % Train Decision Model
@@ -170,7 +172,7 @@ while(~isempty(AllFeatures))
         
         % Update Test Results
         Pc(i) = Pc(i)/K;
-
+        
         % progress indication
         stopbar = progressbar_FFC(1,i/length(AllFeatures));
         if stopbar
@@ -208,27 +210,36 @@ FeatSel = sort(SelectedFeatures);
 Dataset = Dataset_FFC(:,[FeatSel end-1:end]);
 FeatureLabels = FeatureLabels_FFC(FeatSel);
 
-cnt = 0;
-Function_Select = Function_Select_FFC;
-if ~isempty(Function_Select)
-    for i=1:length(Function_Select)
-        for j=1:length(Function_Select{i})
-            if Function_Select{i}(j)
-                cnt = cnt+1;
-                if all(FeatSel~=cnt)
-                    Function_Select{i}(j) = false;
+if isempty(Feature_Transfrom_FFC)
+    
+    cnt = 0;
+    Function_Select = Function_Select_FFC;
+    if ~isempty(Function_Select)
+        for i=1:length(Function_Select)
+            for j=1:length(Function_Select{i})
+                if Function_Select{i}(j)
+                    cnt = cnt+1;
+                    if all(FeatSel~=cnt)
+                        Function_Select{i}(j) = false;
+                    end
                 end
             end
         end
     end
+    Feature_Transfrom = [];
+    
+else
+    
+    Function_Select = Function_Select_FFC;
+    Feature_Transfrom.Coef = Feature_Transfrom_FFC.Coef(:,FeatSel);
+    
 end
-
 %% Save Dataset
 ClassLabels = ClassLabels_FFC;
 Function_Handles = Function_Handles_FFC;
 Function_Labels = Function_Labels_FFC;
-save([path Filename],'Dataset','FeatureLabels','ClassLabels','Function_Handles','Function_Labels','Function_Select','-v7.3');
+save([path Filename],'Dataset','FeatureLabels','ClassLabels','Function_Handles','Function_Labels','Function_Select','Feature_Transfrom','-v7.3');
 
 %% Update GUI
-GUI_Dataset_Update_FFC(Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select);
+GUI_Dataset_Update_FFC(Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select,Feature_Transfrom);
 GUI_MainEditBox_Update_FFC(false,'The process is completed successfully.');

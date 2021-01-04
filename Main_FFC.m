@@ -2,7 +2,7 @@ function Main_FFC
 
 % This function is the main function of Fragments-Expert software.
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 %
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -17,8 +17,9 @@ function Main_FFC
 % If not, see <http://www.gnu.org/licenses/>.
 %
 % Revisions:
-% 2020-Mar-01   function was created
-% 2020-Oct-19   A waiting message is shown when a menu button is pushed, so the user knows that the process is not finished yet
+%   2020-Mar-01   function was created
+%   2020-Oct-19   A waiting message is shown when a menu button is pushed, so the user knows that the process is not finished yet
+%   2021-Jan-03   Feature_Transfrom_FFC and DM_Feature_Transfrom_FFC were defined and included
 
 %% Initialization
 global Main_FFC_fig
@@ -143,46 +144,46 @@ TextBox_FFC = uicontrol(Main_FFC_fig,'Style', 'edit','Enable','inactive','Max',1
 TextBox_FFC_String = {};
 
 %% Define File Menu and Submenus
-File_Menu = uimenu('Label','File');
-uimenu(File_Menu,'Label','Load Dataset','Callback',@RunMethodsforMenus_FFC);
-uimenu(File_Menu,'Label','Load Decision Machine','Callback',@RunMethodsforMenus_FFC);
-uimenu(File_Menu,'Label','Load Test Results','Callback',@RunMethodsforMenus_FFC);
-uimenu(File_Menu,'Label','Load Cross-Validation Results','Callback',@RunMethodsforMenus_FFC);
-uimenu(File_Menu,'Label','Exit','Callback','closereq','Separator','on');
+File_FFCnu = uimenu('Label','File');
+uimenu(File_FFCnu,'Label','Load Dataset','Callback',@RunMethodsforMenus_FFC);
+uimenu(File_FFCnu,'Label','Load Decision Machine','Callback',@RunMethodsforMenus_FFC);
+uimenu(File_FFCnu,'Label','Load Test Results','Callback',@RunMethodsforMenus_FFC);
+uimenu(File_FFCnu,'Label','Load Cross-Validation Results','Callback',@RunMethodsforMenus_FFC);
+uimenu(File_FFCnu,'Label','Exit','Callback','closereq','Separator','on');
 
 %% Define Dataset Menu and Submenus
-Dataset_Menu = uimenu('Label','Dataset');
-uimenu(Dataset_Menu,'Label','Random Permutation of Dataset','Callback',@RunMethodsforMenus_FFC);
-uimenu(Dataset_Menu,'Label','Expand Dataset','Callback',@RunMethodsforMenus_FFC);
-uimenu(Dataset_Menu,'Label','Merge Labels in Dataset','Callback',@RunMethodsforMenus_FFC);
-uimenu(Dataset_Menu,'Label','Select Sub-Dataset','Callback',@RunMethodsforMenus_FFC);
-uimenu(Dataset_Menu,'Label','Generate Dataset from Generic Binary Files of Fragments','Callback',@RunMethodsforMenus_FFC,'Separator','on');
-uimenu(Dataset_Menu,'Label','Generate Dataset (for Decision Machine) from Generic Binary Files of Fragments','Callback',@RunMethodsforMenus_FFC,'Separator','on');
-uimenu(Dataset_Menu,'Label','Convert Raw Multimedia to Fragments Dataset','Callback',@RunMethodsforMenus_FFC,'Separator','on');
+Dataset_FFCnu = uimenu('Label','Dataset');
+uimenu(Dataset_FFCnu,'Label','Random Permutation of Dataset','Callback',@RunMethodsforMenus_FFC);
+uimenu(Dataset_FFCnu,'Label','Expand Dataset','Callback',@RunMethodsforMenus_FFC);
+uimenu(Dataset_FFCnu,'Label','Merge Labels in Dataset','Callback',@RunMethodsforMenus_FFC);
+uimenu(Dataset_FFCnu,'Label','Select Sub-Dataset','Callback',@RunMethodsforMenus_FFC);
+uimenu(Dataset_FFCnu,'Label','Generate Dataset from Generic Binary Files of Fragments','Callback',@RunMethodsforMenus_FFC,'Separator','on');
+uimenu(Dataset_FFCnu,'Label','Generate Dataset (for Decision Machine) from Generic Binary Files of Fragments','Callback',@RunMethodsforMenus_FFC,'Separator','on');
+uimenu(Dataset_FFCnu,'Label','Convert Raw Multimedia to Fragments Dataset','Callback',@RunMethodsforMenus_FFC,'Separator','on');
 
 %% Define Feature Selection Menu and Submenus
-FeatureSelection_Menu = uimenu('Label','Feature Selection');
-uimenu(FeatureSelection_Menu,'Label','Embedded: Decision Tree','Callback',@RunMethodsforMenus_FFC);
-uimenu(FeatureSelection_Menu,'Label','Filter: Pearson Correlation Coefficient','Callback',@RunMethodsforMenus_FFC);
-uimenu(FeatureSelection_Menu,'Label','Wrapper: Sequential Forward Selection with LDA','Callback',@RunMethodsforMenus_FFC);
-uimenu(FeatureSelection_Menu,'Label','Feature Transformation: Principal Component Analysis (PCA)','Callback',@RunMethodsforMenus_FFC);
+FeatureSelection_FFCnu = uimenu('Label','Feature Selection');
+uimenu(FeatureSelection_FFCnu,'Label','Embedded: Decision Tree','Callback',@RunMethodsforMenus_FFC);
+uimenu(FeatureSelection_FFCnu,'Label','Filter: Pearson Correlation Coefficient','Callback',@RunMethodsforMenus_FFC);
+uimenu(FeatureSelection_FFCnu,'Label','Wrapper: Sequential Forward Selection with LDA','Callback',@RunMethodsforMenus_FFC);
+uimenu(FeatureSelection_FFCnu,'Label','Feature Transformation: Principal Component Analysis (PCA)','Callback',@RunMethodsforMenus_FFC);
 
 %% Define Learning Menu and Submenus
-Learning_Menu = uimenu('Label','Learning');
-uimenu(Learning_Menu,'Label','Train Decision Machine','Callback',@RunMethodsforMenus_FFC);
-uimenu(Learning_Menu,'Label','Test Decision Machine','Callback',@RunMethodsforMenus_FFC);
-uimenu(Learning_Menu,'Label','Cross-Validation of Decision Machine','Callback',@RunMethodsforMenus_FFC);
+Learning_FFCnu = uimenu('Label','Learning');
+uimenu(Learning_FFCnu,'Label','Train Decision Machine','Callback',@RunMethodsforMenus_FFC);
+uimenu(Learning_FFCnu,'Label','Test Decision Machine','Callback',@RunMethodsforMenus_FFC);
+uimenu(Learning_FFCnu,'Label','Cross-Validation of Decision Machine','Callback',@RunMethodsforMenus_FFC);
 
 %% Define Visualization Menu and Submenus
-Visualization_Menu = uimenu('Label','Visualization');
-uimenu(Visualization_Menu,'Label','t-Distributed Stochastic Neighbor Embedding (t-SNE)','Callback',@RunMethodsforMenus_FFC);
-uimenu(Visualization_Menu,'Label','Box Plot of Features','Callback',@RunMethodsforMenus_FFC);
-uimenu(Visualization_Menu,'Label','Plot Feature Histogram','Callback',@RunMethodsforMenus_FFC);
-uimenu(Visualization_Menu,'Label','Display Samples in Feature Space','Callback',@RunMethodsforMenus_FFC);
+Visualization_FFCnu = uimenu('Label','Visualization');
+uimenu(Visualization_FFCnu,'Label','t-Distributed Stochastic Neighbor Embedding (t-SNE)','Callback',@RunMethodsforMenus_FFC);
+uimenu(Visualization_FFCnu,'Label','Box Plot of Features','Callback',@RunMethodsforMenus_FFC);
+uimenu(Visualization_FFCnu,'Label','Plot Feature Histogram','Callback',@RunMethodsforMenus_FFC);
+uimenu(Visualization_FFCnu,'Label','Display Samples in Feature Space','Callback',@RunMethodsforMenus_FFC);
 
 %% Define Help Menu and Submenus
-Help_Menu = uimenu('Label','Help');
-uimenu(Help_Menu,'Label','About Fragments-Expert','Callback',@About_Callback);
+Help_FFCnu = uimenu('Label','Help');
+uimenu(Help_FFCnu,'Label','About Fragments-Expert','Callback',@About_Callback);
 
 %% ###################################################################################################
 %% --------------------------------------------------------------------------------------------------#
@@ -332,9 +333,13 @@ function Close_Main_FFC(~,~)
 
 global AllPaths_FFC Main_FFC_fig Dataset_FFC Function_Handles_FFC
 global DecisionMachine_FFC DecisionMachine_CL_FFC
+global Feature_Transfrom_FFC DM_Feature_Transfrom_FFC
+
 rmpath(AllPaths_FFC);
 Main_FFC_fig = [];
 Dataset_FFC = [];
 Function_Handles_FFC = [];
 DecisionMachine_FFC = [];
 DecisionMachine_CL_FFC = [];
+Feature_Transfrom_FFC = [];
+DM_Feature_Transfrom_FFC = [];

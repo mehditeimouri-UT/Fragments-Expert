@@ -23,9 +23,12 @@ function ErrorMsg = Script_FeatureSelection_with_PCA_FFC
 %
 % Revisions:
 % 2020-Oct-29   function was created
+% 2021-Jan-03   Feature_Transfrom_FFC was defined and included
 
 %% Initialization
 global ClassLabels_FFC FeatureLabels_FFC Dataset_FFC
+global Function_Handles_FFC Function_Labels_FFC Function_Select_FFC
+global Feature_Transfrom_FFC
 
 %% Check that Dataset is generated/loaded
 if isempty(Dataset_FFC)
@@ -48,7 +51,8 @@ end
 
 %% Applying PCA
 Dataset = zeros(size(Dataset_FFC));
-[~,Dataset(:,1:end-2),feat_eigs] = pca(Dataset_FFC(:,1:end-2));
+[Coef,~,feat_eigs] = pca(Dataset_FFC(:,1:end-2));
+Dataset(:,1:end-2) = Dataset_FFC(:,1:end-2)*Coef;
 Dataset(:,end-1:end) = Dataset_FFC(:,end-1:end);
 
 %% Prompt User for Selecting Features
@@ -72,18 +76,26 @@ FeatSel = FeatSel(:)';
 Dataset = Dataset(:,[FeatSel end-1:end]);
 FeatureLabels = FeatureLabels(FeatSel);
 
+%% Modify Feature_Transfrom
+Feature_Transfrom = Feature_Transfrom_FFC;
+if isempty(Feature_Transfrom)
+    Feature_Transfrom.Coef = Coef(:,FeatSel);
+else
+    Feature_Transfrom.Coef = Feature_Transfrom.Coef*Coef(:,FeatSel);
+end
+
 %% Save Dataset
-Function_Handles = [];
-Function_Labels = [];
-Function_Select = [];
+Function_Handles = Function_Handles_FFC;
+Function_Labels = Function_Labels_FFC;
+Function_Select = Function_Select_FFC;
 
 [Filename,path] = uiputfile('feature_selected_dataset.mat','Save Feature-Selected Dataset');
 if isequal(Filename,0)
     ErrorMsg = 'Process is aborted. No file was selected by user for saving dataset.';
     return;
 end
-save([path Filename],'Dataset','FeatureLabels','ClassLabels','Function_Handles','Function_Labels','Function_Select','-v7.3');
+save([path Filename],'Dataset','FeatureLabels','ClassLabels','Function_Handles','Function_Labels','Function_Select','Feature_Transfrom','-v7.3');
 
 %% Update GUI
-GUI_Dataset_Update_FFC(Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select);
+GUI_Dataset_Update_FFC(Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select,Feature_Transfrom);
 GUI_MainEditBox_Update_FFC(false,'The process is completed successfully.');

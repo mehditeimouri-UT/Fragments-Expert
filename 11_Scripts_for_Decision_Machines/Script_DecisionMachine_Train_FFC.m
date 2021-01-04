@@ -3,7 +3,7 @@ function ErrorMsg = Script_DecisionMachine_Train_FFC
 % This function takes Dataset_FFC with L rows (L samples) and C columns (C-2 features) and does the following process:
 %   - Train a decision machine using train/validation data
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 % 
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -24,11 +24,13 @@ function ErrorMsg = Script_DecisionMachine_Train_FFC
 % Revisions:
 % 2020-Mar-03   function was created
 % 2020-Oct-19   filename for saving the results is prompted before the process begins  
+% 2021-Jan-03   DM_Feature_Transfrom_FFC was included
 
 %% Initialization
 global ClassLabels_FFC FeatureLabels_FFC Dataset_FFC
 global Function_Handles_FFC Function_Labels_FFC Function_Select_FFC
 global Dataset_FFC_Name_TextBox
+global Feature_Transfrom_FFC
 
 %% Check that Dataset is generated/loaded
 if isempty(Dataset_FFC)
@@ -66,7 +68,7 @@ switch DecisionModel
         Default_Value = [Default_Value '0.001'];
         
     case 'SVM'
-        Param_Names = [Param_Names 'feature_scaling_method'];
+        Param_Names = [Param_Names 'feature_scaling_FFCthod'];
         Param_Description = [Param_Description 'The method of feature scaling: z-score, min-max, or no scaling'];
         Default_Value = [Default_Value 'z-score'];
         
@@ -96,7 +98,7 @@ switch DecisionModel
         Default_Value = [Default_Value '0.0001'];
         
     case 'Ensemble kNN'        
-        Param_Names = [Param_Names 'feature_scaling_method'];
+        Param_Names = [Param_Names 'feature_scaling_FFCthod'];
         Param_Description = [Param_Description 'The method of feature scaling: z-score, min-max, or no scaling'];
         Default_Value = [Default_Value 'z-score'];
         
@@ -113,12 +115,12 @@ switch DecisionModel
         Default_Value = [Default_Value '5'];
         
     case {'Naive Bayes','Linear Discriminant Analysis (LDA)'}
-        Param_Names = [Param_Names 'feature_scaling_method'];
+        Param_Names = [Param_Names 'feature_scaling_FFCthod'];
         Param_Description = [Param_Description 'The method of feature scaling: z-score, min-max, or no scaling'];
         Default_Value = [Default_Value 'z-score'];
         
     case 'Neural Network'
-        Param_Names = [Param_Names 'feature_scaling_method'];
+        Param_Names = [Param_Names 'feature_scaling_FFCthod'];
         Param_Description = [Param_Description 'The method of feature scaling: z-score, min-max, or no scaling'];
         Default_Value = [Default_Value 'z-score'];
         
@@ -180,8 +182,8 @@ if isequal(exist('MinLeafSize','var'),1)
     end
 end
 
-if isequal(exist('feature_scaling_method','var'),1)    
-    [Err,ErrMsg] = Check_Variable_Value_FFC(feature_scaling_method,'The method of feature scaling','possiblevalues',{'z-score','min-max','no scaling'});
+if isequal(exist('feature_scaling_FFCthod','var'),1)    
+    [Err,ErrMsg] = Check_Variable_Value_FFC(feature_scaling_FFCthod,'The method of feature scaling','possiblevalues',{'z-score','min-max','no scaling'});
     if Err
         ErrorMsg = sprintf('Process is aborted. %s',ErrMsg);
         return;
@@ -292,7 +294,7 @@ end
 Dataset = Dataset_FFC;
 switch DecisionModel
     case {'SVM','Ensemble kNN','Naive Bayes','Linear Discriminant Analysis (LDA)','Neural Network'}
-        [Dataset([TIndex ; VIndex],:),Scaling_Parameters] = Scale_Features_FFC(Dataset_FFC([TIndex ; VIndex],:),feature_scaling_method);
+        [Dataset([TIndex ; VIndex],:),Scaling_Parameters] = Scale_Features_FFC(Dataset_FFC([TIndex ; VIndex],:),feature_scaling_FFCthod);
         
     case {'Decision Tree','Random Forest'}
         
@@ -406,7 +408,7 @@ switch DecisionModel
         TrainingParameters.Scaling_Parameters = Scaling_Parameters;
         TrainingParameters.KernelFunction = KernelFunction;
         TrainingParameters.PolynomialOrder = PolynomialOrder;
-        TrainingParameters.feature_scaling_method = feature_scaling_method;
+        TrainingParameters.feature_scaling_FFCthod = feature_scaling_FFCthod;
         TrainingParameters.BoxConstraint = BoxConstraint;
         TrainingParameters.KernelScale = KernelScale;
 
@@ -422,18 +424,18 @@ switch DecisionModel
         
     case 'Ensemble kNN'
         TrainingParameters.Scaling_Parameters = Scaling_Parameters;
-        TrainingParameters.feature_scaling_method = feature_scaling_method;
+        TrainingParameters.feature_scaling_FFCthod = feature_scaling_FFCthod;
         TrainingParameters.NumFeatures = NumFeatures;
         TrainingParameters.NumLearners = NumLearners;
         TrainingParameters.NumNeighbors = NumNeighbors;
         
     case {'Naive Bayes','Linear Discriminant Analysis (LDA)'}
-        TrainingParameters.feature_scaling_method = feature_scaling_method;
+        TrainingParameters.feature_scaling_FFCthod = feature_scaling_FFCthod;
         TrainingParameters.Scaling_Parameters = Scaling_Parameters;
         
     case 'Neural Network'
         TrainingParameters.Scaling_Parameters = Scaling_Parameters;
-        TrainingParameters.feature_scaling_method = feature_scaling_method;
+        TrainingParameters.feature_scaling_FFCthod = feature_scaling_FFCthod;
         TrainingParameters.hiddenSize = hiddenSize;
         
 end
@@ -445,10 +447,11 @@ Display_DecisionMachine_FFC(TrainingParameters,TrainingResults,DecisionMachine,D
 Function_Handles = Function_Handles_FFC;
 Function_Labels = Function_Labels_FFC;
 Function_Select = Function_Select_FFC;
+Feature_Transfrom = Feature_Transfrom_FFC;
 save(FullFileName,'TrainingParameters','TrainingResults','DecisionMachine','DecisionMachine_CL','ClassLabels','FeatureLabels',...
-    'Function_Handles','Function_Labels','Function_Select','-v7.3');
+    'Function_Handles','Function_Labels','Function_Select','Feature_Transfrom','-v7.3');
 
 %% Update GUI
 GUI_DecisionMachine_Update_FFC(Filename,TrainingParameters,TrainingResults,DecisionMachine,DecisionMachine_CL,FeatureLabels,ClassLabels,...
-    Function_Handles,Function_Labels,Function_Select);
+    Function_Handles,Function_Labels,Function_Select,Feature_Transfrom);
 GUI_MainEditBox_Update_FFC(false,'The process is completed successfully.');

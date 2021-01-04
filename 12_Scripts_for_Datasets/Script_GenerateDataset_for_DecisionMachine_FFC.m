@@ -28,7 +28,7 @@ function ErrorMsg = Script_GenerateDataset_for_DecisionMachine_FFC
 %   (3) Saves Dataset and assigns the corresponding value to global
 %   variable Dataset_FFC, ClassLabels_FFC, FeatureLabels_FFC.
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 %
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -49,10 +49,12 @@ function ErrorMsg = Script_GenerateDataset_for_DecisionMachine_FFC
 % Revisions:
 % 2020-May-20   function was created
 % 2020-Oct-18   filename for saving the dataset is prompted before the process of feature extraction begins  
+% 2021-Jan-03   DM_Feature_Transfrom_FFC was included
 
 %% Global Variables
 global DecisionMachine_FFC DecisionMachine_CL_FFC DM_FeatureLabels_FFC
 global DM_Function_Handles_FFC DM_Function_Labels_FFC DM_Function_Select_FFC
+global DM_Feature_Transfrom_FFC
 
 %% Check that Decision Machine is generated/loaded
 if isempty(DecisionMachine_FFC) && isempty(DecisionMachine_CL_FFC)
@@ -66,13 +68,13 @@ if isempty(DM_Function_Handles_FFC)
 end
 
 %% Initialization
-global C_MEX_64_Available
+global C_FFCX_64_Available
 ErrorMsg = '';
 try
-    C_MEX_64_Available = true;
+    C_FFCX_64_Available = true;
     LCSSeq2_FFC(randi([0 255],[1 1024]),{randi([0 255],[1 1024])});
 catch
-    C_MEX_64_Available = false;
+    C_FFCX_64_Available = false;
 end
 
 %% ###################################################################################################
@@ -183,6 +185,8 @@ FeatureLabels = DM_FeatureLabels_FFC;
 Function_Handles = DM_Function_Handles_FFC;
 Function_Labels = DM_Function_Labels_FFC;
 Function_Select = DM_Function_Select_FFC;
+Feature_Transfrom = DM_Feature_Transfrom_FFC;
+
 Dataset = zeros(TotalFragments,NumberofFeatures+2);
 
 count = 0;
@@ -227,9 +231,14 @@ for j=1:length(ClassLabels) % Loop over different labels
 end
 progressbar_FFC(1,1);
 
+%% Transform Dataset if needed
+if ~isempty(Feature_Transfrom)
+    Dataset = [Dataset(:,1:end-2)*Feature_Transfrom.Coef Dataset(:,end-1:end)];
+end
+
 %% Save Dataset
-save([path filename],'Dataset','FeatureLabels','ClassLabels','Function_Handles','Function_Labels','Function_Select','-v7.3');
+save([path filename],'Dataset','FeatureLabels','ClassLabels','Function_Handles','Function_Labels','Function_Select','Feature_Transfrom','-v7.3');
 
 %% Update GUI
-GUI_Dataset_Update_FFC(filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select);
+GUI_Dataset_Update_FFC(filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select,Feature_Transfrom);
 GUI_MainEditBox_Update_FFC(false,'The process is completed successfully.');

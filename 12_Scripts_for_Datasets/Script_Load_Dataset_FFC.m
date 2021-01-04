@@ -2,7 +2,7 @@ function ErrorMsg = Script_Load_Dataset_FFC
 
 % This function loads Dataset_FFC from a mat file
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 % 
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -22,6 +22,7 @@ function ErrorMsg = Script_Load_Dataset_FFC
 %
 % Revisions:
 % 2020-Mar-05   function was created
+% 2021-Jan-03   Feature_Transfrom_FFC was added
 
 %% ###################################################################################################
 %% --------------------------------------------------------------------------------------------------#
@@ -30,11 +31,11 @@ function ErrorMsg = Script_Load_Dataset_FFC
 %% ###################################################################################################
 
 %% Load Dataset
-[Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select,ErrorMsg] = Load_Dataset_FFC;
+[Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select,Feature_Transfrom,ErrorMsg] = Load_Dataset_FFC;
 if ~isempty(ErrorMsg)
     return;
 end
 
 %% Update GUI
-GUI_Dataset_Update_FFC(Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select);
+GUI_Dataset_Update_FFC(Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select,Feature_Transfrom);
 GUI_MainEditBox_Update_FFC(false,'Dataset is loaded successfully.');

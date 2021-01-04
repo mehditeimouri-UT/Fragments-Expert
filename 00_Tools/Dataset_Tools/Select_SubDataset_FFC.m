@@ -1,9 +1,9 @@
-function [ErrorMsg,Dataset,FeatureLabels,ClassLabels,Function_Select] = Select_SubDataset_FFC(Dataset,FeatureLabels,ClassLabels,Function_Select)
+function [ErrorMsg,Dataset,FeatureLabels,ClassLabels,Function_Select,Feature_Transfrom] = Select_SubDataset_FFC(Dataset,FeatureLabels,ClassLabels,Function_Select,Feature_Transfrom)
 
 % This function takes Dataset and selects subset of Dataset. Subset can be
 % taken as sub-features or sub-classes (or both).
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 %
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -28,6 +28,7 @@ function [ErrorMsg,Dataset,FeatureLabels,ClassLabels,Function_Select] = Select_S
 %       classes corresponding to integer-valued class labels 1,2,....
 %   Function_Select: Cell array of selected features after feature
 %       calculation. This cell array contains C-2 logival values true.
+%   Feature_Transfrom: A structure which determines the feature tranform if it is non-empty. 
 %
 % Outputs:
 %   ErrorMsg: Possible error message. If there is no error, this output is
@@ -42,13 +43,15 @@ function [ErrorMsg,Dataset,FeatureLabels,ClassLabels,Function_Select] = Select_S
 %       classes corresponding to integer-valued class labels 1,2,....
 %   Function_Select: Cell array of selected features after feature calculation. 
 %       This cell array contains C-p2 logival values true.
+%   Feature_Transfrom: A structure which determines the feature tranform if it is non-empty. 
 %
-%   Note: In Dataset and MergedDataset, First, the samples of class 1 appear.
+%   Note: In Dataset, First, the samples of class 1 appear.
 %   Second, the the samples of class 2 appear, and so on. Also, for the samples
 %   of each class, the fragments of a signle multimedia file appear consecutively.
 %
 % Revisions:
 % 2020-Mar-05   function was created
+% 2021-Jan-03   Feature_Transfrom input/output were included
 
 %% Select Sub-Classes
 [ErrorMsg,ClassSel,~] = Select_from_List_FFC(ClassLabels,1,'Select classes to be included');
@@ -67,16 +70,23 @@ FeatSel = FeatSel{1};
 %% Select Sub-Features
 Dataset = Dataset(:,[FeatSel end-1:end]);
 FeatureLabels = FeatureLabels(FeatSel);
-cnt = 0;
-for i=1:length(Function_Select)
-    for j=1:length(Function_Select{i})
-        if Function_Select{i}(j)
-            cnt = cnt+1;
-            if all(FeatSel~=cnt)
-                Function_Select{i}(j) = false;
+if isempty(Feature_Transfrom)
+    
+    cnt = 0;
+    for i=1:length(Function_Select)
+        for j=1:length(Function_Select{i})
+            if Function_Select{i}(j)
+                cnt = cnt+1;
+                if all(FeatSel~=cnt)
+                    Function_Select{i}(j) = false;
+                end
             end
         end
     end
+else
+    
+    Feature_Transfrom = Feature_Transfrom(:,FeatSel);
+    
 end
 
 %% Select Sub-Classes

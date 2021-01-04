@@ -3,7 +3,7 @@ function ErrorMsg = Script_MergeLabels_Dataset_FFC
 % This function takes Dataset_FFC with L rows (L samples) and C columns (C-2 features) and does the following process:
 %   - Merge class labels by user choice 
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 % 
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -23,10 +23,12 @@ function ErrorMsg = Script_MergeLabels_Dataset_FFC
 %
 % Revisions:
 % 2020-Mar-05   function was created
+% 2021-Jan-03   Feature_Transfrom_FFC was included
 
 %% Initialization
 global ClassLabels_FFC FeatureLabels_FFC Dataset_FFC
 global Function_Handles_FFC Function_Labels_FFC Function_Select_FFC
+global Feature_Transfrom_FFC
 
 %% Check that Dataset is generated/loaded
 if isempty(Dataset_FFC)
@@ -47,7 +49,7 @@ if ~isempty(ErrorMsg)
 end
 
 %% Save Merged-Labels Dataset
-[Filename,path] = uiputfile('mydataset_mergedclasses.mat','Save Merged-Labels Dataset');
+[Filename,path] = uiputfile('mydataset_FFCrgedclasses.mat','Save Merged-Labels Dataset');
 if isequal(Filename,0)
     ErrorMsg = 'Process is aborted. No file was selected by user for saving merged-classes dataset.';
     return;
@@ -57,8 +59,9 @@ FeatureLabels = FeatureLabels_FFC;
 Function_Handles = Function_Handles_FFC;
 Function_Labels = Function_Labels_FFC;
 Function_Select = Function_Select_FFC;
-save([path Filename],'Dataset','FeatureLabels','ClassLabels','Function_Handles','Function_Labels','Function_Select','-v7.3');
+Feature_Transfrom = Feature_Transfrom_FFC;
+save([path Filename],'Dataset','FeatureLabels','ClassLabels','Function_Handles','Function_Labels','Function_Select','Feature_Transfrom','-v7.3');
 
 %% Update GUI
-GUI_Dataset_Update_FFC(Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select);
+GUI_Dataset_Update_FFC(Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select,Feature_Transfrom);
 GUI_MainEditBox_Update_FFC(false,'The process is completed successfully.');

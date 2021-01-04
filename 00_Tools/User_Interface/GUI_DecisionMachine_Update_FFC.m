@@ -1,10 +1,10 @@
 function GUI_DecisionMachine_Update_FFC(Filename,TrainingParameters,TrainingResults,DecisionMachine,DecisionMachine_CL,FeatureLabels,ClassLabels,...
-    Function_Handles,Function_Labels,Function_Select)
+    Function_Handles,Function_Labels,Function_Select,Feature_Transfrom)
 
                                         
 % This function updates the Fragments-Expert GUI according to Generated/Loaded Decision Machine. 
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 % 
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -44,14 +44,16 @@ function GUI_DecisionMachine_Update_FFC(Filename,TrainingParameters,TrainingResu
 %   Function_Labels: Cell array of feature labels used for generating
 %       dataset. 
 %   Function_Select: Cell array of selected features after feature calculation. 
+%   Feature_Transfrom: A structure which determines the feature tranform if it is non-empty. 
 %     
 % Revisions:
 % 2020-Mar-04   function was created
+% 2021-Jan-03   DM_Feature_Transfrom_FFC was included
 
 %% Initialization
 global DecisionMachine_FFC_Name_TextBox DecisionMachine_FFC_Validation_TextBox View_Decision_Machine_PushButton_FFC
 global DM_TrainingParameters_FFC DM_TrainingResults_FFC DecisionMachine_FFC DecisionMachine_CL_FFC DM_ClassLabels_FFC DM_FeatureLabels_FFC
-global DM_Function_Handles_FFC DM_Function_Labels_FFC DM_Function_Select_FFC
+global DM_Function_Handles_FFC DM_Function_Labels_FFC DM_Function_Select_FFC DM_Feature_Transfrom_FFC
 
 %% Update GUI
 set(DecisionMachine_FFC_Name_TextBox,'String',Filename);
@@ -72,3 +74,4 @@ DM_FeatureLabels_FFC = FeatureLabels;
 DM_Function_Handles_FFC = Function_Handles;
 DM_Function_Labels_FFC = Function_Labels;
 DM_Function_Select_FFC = Function_Select;
+DM_Feature_Transfrom_FFC = Feature_Transfrom;

@@ -1,9 +1,9 @@
 function [Filename,TrainingParameters,TrainingResults,DecisionMachine,DecisionMachine_CL,FeatureLabels,ClassLabels,...
-    Function_Handles,Function_Labels,Function_Select,ErrorMsg] = Load_DecisionMachine_FFC
+    Function_Handles,Function_Labels,Function_Select,Feature_Transfrom,ErrorMsg] = Load_DecisionMachine_FFC
 
 % This function loads a decision machine.
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 % 
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -43,11 +43,13 @@ function [Filename,TrainingParameters,TrainingResults,DecisionMachine,DecisionMa
 %   Function_Labels: Cell array of feature labels used for generating
 %       dataset. 
 %   Function_Select: Cell array of selected features after feature calculation. 
+%   Feature_Transfrom: A structure which determines the feature tranform if it is non-empty. 
 %   ErrorMsg: Possible error message. If there is no error, this output is
 %   empty. 
 %
 % Revisions:
 % 2020-Mar-03   function was created
+% 2021-Jan-03   Feature_Transfrom output was included
 
 %% Initialization
 ErrorMsg = '';
@@ -60,6 +62,7 @@ ClassLabels = [];
 Function_Handles = [];
 Function_Labels = [];
 Function_Select = [];
+Feature_Transfrom = [];
 
 %% Get file from user
 [Filename,path] = uigetfile('*.mat','Load Decision Machine');
@@ -81,6 +84,11 @@ try
     Function_Handles = matObj.Function_Handles;
     Function_Labels = matObj.Function_Labels;
     Function_Select = matObj.Function_Select;
+    try 
+        Feature_Transfrom = matObj.Feature_Transfrom;
+    catch
+        Feature_Transfrom = [];
+    end
 catch
     ErrorMsg = 'Selected file is not a suported decision machine!';
 end

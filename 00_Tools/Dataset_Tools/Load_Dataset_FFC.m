@@ -1,8 +1,8 @@
-function [Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select,ErrorMsg] = Load_Dataset_FFC(dlg_title)
+function [Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_Labels,Function_Select,Feature_Transfrom,ErrorMsg] = Load_Dataset_FFC(dlg_title)
 
 % This function loads a Dataset.
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 % 
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -41,11 +41,13 @@ function [Filename,Dataset,FeatureLabels,ClassLabels,Function_Handles,Function_L
 %   Function_Labels: Cell array of feature labels used for generating
 %       dataset. 
 %   Function_Select: Cell array of selected features after feature calculation. 
+%   Feature_Transfrom: A structure which determines the feature tranform if it is non-empty. 
 %   ErrorMsg: Possible error message. If there is no error, this output is
 %       empty.
 %
 % Revisions:
 % 2020-Mar-03   function was created
+% 2021-Jan-03   Feature_Transfrom output was added
 
 %% Initialization
 Dataset = [];
@@ -54,6 +56,7 @@ ClassLabels = [];
 Function_Handles = [];
 Function_Labels = [];
 Function_Select = [];
+Feature_Transfrom = [];
 ErrorMsg = [];
 
 if nargin==0
@@ -78,6 +81,11 @@ try
     Function_Handles = matObj.Function_Handles;
     Function_Labels = matObj.Function_Labels;
     Function_Select = matObj.Function_Select;
+    try
+        Feature_Transfrom = matObj.Feature_Transfrom;
+    catch
+        Feature_Transfrom = [];
+    end
 catch
     ErrorMsg = 'Selected file is not a suported dataset!';
     return;
