@@ -3,7 +3,7 @@ function ErrorMsg = Script_DecisionMacine_Test_FFC
 % This function takes Dataset_FFC with L rows (L samples) and C columns (C-2 features) and does the following process:
 %   - Test DecisionMachine_FFC with a part of Dataset_FFC and displays the results.
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 % 
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -24,6 +24,8 @@ function ErrorMsg = Script_DecisionMacine_Test_FFC
 % Revisions:
 % 2020-Mar-10   function was created
 % 2020-Oct-19   filename for saving the results is prompted before the process begins  
+% 2021-Jan-15   The Nodes output in decision tree was removed for 
+%               compatibility with other MATLAB releases.
 
 %% Initialization 
 global Dataset_FFC DecisionMachine_FFC DecisionMachine_CL_FFC
@@ -112,7 +114,7 @@ Weights = Assign_Weights_FFC(Dataset_FFC(:,end-1),ClassLabels_FFC,Weighting_Meth
 switch DM_TrainingParameters_FFC.Type
     case 'Decision Tree'
         
-        [ErrorMsg,Pc,ConfusionMatrix,PredictedLabel,Nodes,Scores] = ...
+        [ErrorMsg,Pc,ConfusionMatrix,PredictedLabel,Scores] = ...
             Test_DecisionTree_FFC(DecisionMachine_FFC,Dataset,TestIndex,ClassLabels_FFC,DM_ClassLabels_FFC,FeatureLabels_FFC,DM_FeatureLabels_FFC,Weights);
         
     case 'SVM'
@@ -165,17 +167,7 @@ TestResults.Pc = Pc;
 TestResults.ConfusionMatrix = ConfusionMatrix;
 TestResults.TrueLabels = Dataset_FFC(TestIndex,end-1);
 TestResults.PredictedLabels = PredictedLabel;
-
-% Set Model-Specific Parameters 
-switch DM_TrainingParameters_FFC.Type
-    case 'Decision Tree'
-        TestResults.Nodes = Nodes;
-        TestResults.Scores = Scores;
-        
-    case {'SVM','Random Forest','Ensemble kNN','Naive Bayes','Linear Discriminant Analysis (LDA)','Neural Network'}
-        TestResults.Scores = Scores;
-
-end
+TestResults.Scores = Scores;
 
 %% Show Test Results
 Display_TestResults_FFC(TestParameters,TestResults);

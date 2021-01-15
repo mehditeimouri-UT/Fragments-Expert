@@ -5,7 +5,7 @@ function ErrorMsg = Script_DecisionMachine_CrossValidation_FFC
 %   (2) Cross-Validate the performance of decesion-machine in prediction the
 %   label for Dataset_FFC samples.
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 %
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -26,6 +26,8 @@ function ErrorMsg = Script_DecisionMachine_CrossValidation_FFC
 % Revisions:
 % 2020-Mar-10   function was created
 % 2020-Oct-19   filename for saving the results is prompted before the process begins  
+% 2021-Jan-15   The Nodes output in decision tree was removed for 
+%               compatibility with other MATLAB releases.
 
 %% Initialization
 global Dataset_FFC
@@ -504,7 +506,7 @@ for i=1:L_Tune % Loop over Tuning Parameter
             case 'Decision Tree'
                 
                 % Test Decision Tree
-                [~,Pc_tmp,ConfusionMatrix_tmp,PLabel_tmp,~,Sc_tmp] = Test_DecisionTree_FFC(DM,Dataset,TestIndex,ClassLabels_FFC,ClassLabels_FFC,FeatureLabels_FFC,FeatureLabels_FFC,Weights);
+                [~,Pc_tmp,ConfusionMatrix_tmp,PLabel_tmp,Sc_tmp] = Test_DecisionTree_FFC(DM,Dataset,TestIndex,ClassLabels_FFC,ClassLabels_FFC,FeatureLabels_FFC,FeatureLabels_FFC,Weights);
                 
             case 'SVM'
                 

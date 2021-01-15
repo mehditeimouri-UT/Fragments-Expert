@@ -1,9 +1,9 @@
-function [ErrorMsg,Pc,ConfusionMatrix,PredictedLabel,Nodes,Scores] = Test_DecisionTree_FFC(tree,Dataset,TestIndex,DataClassLabels,TreeClassLabels,DataFeartureLabels,TreeFeartureLabels,Weights)
+function [ErrorMsg,Pc,ConfusionMatrix,PredictedLabel,Scores] = Test_DecisionTree_FFC(tree,Dataset,TestIndex,DataClassLabels,TreeClassLabels,DataFeartureLabels,TreeFeartureLabels,Weights)
 
 % This function takes a decision tree and evaluates the performace of the
 % tree on a test set. 
 %
-% Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 % 
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -45,17 +45,17 @@ function [ErrorMsg,Pc,ConfusionMatrix,PredictedLabel,Nodes,Scores] = Test_Decisi
 %       M is the number of class lables in tree. 
 %       Usually M0=M.
 %   PredictedLabel: L0*1 vector indicating predicted labels.
-%   Nodes: L0x1 vector that indicates the node number in that each samples falls into. 
 %   Scores: L0xlength(TreeClassLabels) matrix. Each row with length M shows the probability for each label. 
 %
 % Revisions:
 % 2020-Mar-03   function was created
+% 2021-Jan-15   The Nodes output was removed for compatibility with other
+%               MATLAB releases.
 
 %% Initialization
 ErrorMsg= '';
 Pc = [];
 ConfusionMatrix = [];
-Nodes = [];
 Scores = [];
 PredictedLabel = [];
 
@@ -70,8 +70,5 @@ Test = Dataset(TestIndex,:);
 Test_Weights = Weights(TestIndex);
 
 %% Evaluate the performance of the final tree on the test set
-PredictedLabel = predict(tree,Test(:,1:end-2));
-Nodes = findNode(tree.Impl,Test(:,1:end-2),[],0);
-%Scores = round(repmat(tree.NodeSize(Nodes,:),1,size(tree.ClassProbability,2)).*tree.ClassProbability(Nodes,:));
-Scores = tree.ClassProbability(Nodes,:);
+[PredictedLabel,Scores] = predict(tree,Test(:,1:end-2));
 [ConfusionMatrix,Pc] = ConfusionMatrix_FFC(Test(:,end-1),PredictedLabel,DataClassLabels,TreeClassLabels,Test_Weights);
