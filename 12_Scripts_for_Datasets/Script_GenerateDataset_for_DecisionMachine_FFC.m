@@ -68,13 +68,13 @@ if isempty(DM_Function_Handles_FFC)
 end
 
 %% Initialization
-global C_FFCX_64_Available
+global C_MEX_64_Available
 ErrorMsg = '';
 try
-    C_FFCX_64_Available = true;
+    C_MEX_64_Available = true;
     LCSSeq2_FFC(randi([0 255],[1 1024]),{randi([0 255],[1 1024])});
 catch
-    C_FFCX_64_Available = false;
+    C_MEX_64_Available = false;
 end
 
 %% ###################################################################################################

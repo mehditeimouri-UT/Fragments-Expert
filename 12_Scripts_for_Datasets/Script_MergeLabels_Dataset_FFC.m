@@ -49,7 +49,7 @@ if ~isempty(ErrorMsg)
 end
 
 %% Save Merged-Labels Dataset
-[Filename,path] = uiputfile('mydataset_FFCrgedclasses.mat','Save Merged-Labels Dataset');
+[Filename,path] = uiputfile('mydataset_Mergedclasses.mat','Save Merged-Labels Dataset');
 if isequal(Filename,0)
     ErrorMsg = 'Process is aborted. No file was selected by user for saving merged-classes dataset.';
     return;

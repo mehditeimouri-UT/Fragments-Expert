@@ -48,7 +48,7 @@ end
 TV = [100 0]; % Train/Validation Percentages
 PartitionGenerateError = [true false];
 
-Param_Names = {'Weighting_Method','TVTIndex','K','feature_scaling_FFCthod'};
+Param_Names = {'Weighting_Method','TVTIndex','K','feature_scaling_method'};
 Param_Description = {'Weighting Method (balanced or uniform)',...
     'Start and End of the Train/Validation/Test in Dataset (1x2 vector with elements 0~1)',...
     'K value of K-Fold Cross-Validation (>=2 and <=10)',...
@@ -82,7 +82,7 @@ if Err
     return;
 end
 
-[Err,ErrMsg] = Check_Variable_Value_FFC(feature_scaling_FFCthod,'The method of feature scaling','possiblevalues',{'z-score','min-max','no scaling'});
+[Err,ErrMsg] = Check_Variable_Value_FFC(feature_scaling_method,'The method of feature scaling','possiblevalues',{'z-score','min-max','no scaling'});
 if Err
     ErrorMsg = sprintf('Process is aborted. %s',ErrMsg);
     return;
@@ -148,7 +148,7 @@ while(~isempty(AllFeatures))
             
             % Scaling Features
             Dataset = zeros(size(Dataset_FFC,1),length(Features)+2);
-            [Dataset(TrainValidationIndex,:),Scaling_Parameters] = Scale_Features_FFC(Dataset_FFC(TrainValidationIndex,[Features end-1:end]),feature_scaling_FFCthod);
+            [Dataset(TrainValidationIndex,:),Scaling_Parameters] = Scale_Features_FFC(Dataset_FFC(TrainValidationIndex,[Features end-1:end]),feature_scaling_method);
             Dataset(TestIndex,:) = Scale_Features_FFC(Dataset_FFC(TestIndex,[Features end-1:end]),Scaling_Parameters);
             
             % Train Decision Model

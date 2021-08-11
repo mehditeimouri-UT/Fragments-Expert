@@ -68,7 +68,7 @@ switch DecisionModel
         Default_Value = [Default_Value '0.001'];
         
     case 'SVM'
-        Param_Names = [Param_Names 'feature_scaling_FFCthod'];
+        Param_Names = [Param_Names 'feature_scaling_method'];
         Param_Description = [Param_Description 'The method of feature scaling: z-score, min-max, or no scaling'];
         Default_Value = [Default_Value 'z-score'];
         
@@ -98,7 +98,7 @@ switch DecisionModel
         Default_Value = [Default_Value '0.0001'];
         
     case 'Ensemble kNN'        
-        Param_Names = [Param_Names 'feature_scaling_FFCthod'];
+        Param_Names = [Param_Names 'feature_scaling_method'];
         Param_Description = [Param_Description 'The method of feature scaling: z-score, min-max, or no scaling'];
         Default_Value = [Default_Value 'z-score'];
         
@@ -115,12 +115,12 @@ switch DecisionModel
         Default_Value = [Default_Value '5'];
         
     case {'Naive Bayes','Linear Discriminant Analysis (LDA)'}
-        Param_Names = [Param_Names 'feature_scaling_FFCthod'];
+        Param_Names = [Param_Names 'feature_scaling_method'];
         Param_Description = [Param_Description 'The method of feature scaling: z-score, min-max, or no scaling'];
         Default_Value = [Default_Value 'z-score'];
         
     case 'Neural Network'
-        Param_Names = [Param_Names 'feature_scaling_FFCthod'];
+        Param_Names = [Param_Names 'feature_scaling_method'];
         Param_Description = [Param_Description 'The method of feature scaling: z-score, min-max, or no scaling'];
         Default_Value = [Default_Value 'z-score'];
         
@@ -182,8 +182,8 @@ if isequal(exist('MinLeafSize','var'),1)
     end
 end
 
-if isequal(exist('feature_scaling_FFCthod','var'),1)    
-    [Err,ErrMsg] = Check_Variable_Value_FFC(feature_scaling_FFCthod,'The method of feature scaling','possiblevalues',{'z-score','min-max','no scaling'});
+if isequal(exist('feature_scaling_method','var'),1)    
+    [Err,ErrMsg] = Check_Variable_Value_FFC(feature_scaling_method,'The method of feature scaling','possiblevalues',{'z-score','min-max','no scaling'});
     if Err
         ErrorMsg = sprintf('Process is aborted. %s',ErrMsg);
         return;
@@ -294,7 +294,7 @@ end
 Dataset = Dataset_FFC;
 switch DecisionModel
     case {'SVM','Ensemble kNN','Naive Bayes','Linear Discriminant Analysis (LDA)','Neural Network'}
-        [Dataset([TIndex ; VIndex],:),Scaling_Parameters] = Scale_Features_FFC(Dataset_FFC([TIndex ; VIndex],:),feature_scaling_FFCthod);
+        [Dataset([TIndex ; VIndex],:),Scaling_Parameters] = Scale_Features_FFC(Dataset_FFC([TIndex ; VIndex],:),feature_scaling_method);
         
     case {'Decision Tree','Random Forest'}
         
@@ -408,7 +408,7 @@ switch DecisionModel
         TrainingParameters.Scaling_Parameters = Scaling_Parameters;
         TrainingParameters.KernelFunction = KernelFunction;
         TrainingParameters.PolynomialOrder = PolynomialOrder;
-        TrainingParameters.feature_scaling_FFCthod = feature_scaling_FFCthod;
+        TrainingParameters.feature_scaling_method = feature_scaling_method;
         TrainingParameters.BoxConstraint = BoxConstraint;
         TrainingParameters.KernelScale = KernelScale;
 
@@ -424,18 +424,18 @@ switch DecisionModel
         
     case 'Ensemble kNN'
         TrainingParameters.Scaling_Parameters = Scaling_Parameters;
-        TrainingParameters.feature_scaling_FFCthod = feature_scaling_FFCthod;
+        TrainingParameters.feature_scaling_method = feature_scaling_method;
         TrainingParameters.NumFeatures = NumFeatures;
         TrainingParameters.NumLearners = NumLearners;
         TrainingParameters.NumNeighbors = NumNeighbors;
         
     case {'Naive Bayes','Linear Discriminant Analysis (LDA)'}
-        TrainingParameters.feature_scaling_FFCthod = feature_scaling_FFCthod;
+        TrainingParameters.feature_scaling_method = feature_scaling_method;
         TrainingParameters.Scaling_Parameters = Scaling_Parameters;
         
     case 'Neural Network'
         TrainingParameters.Scaling_Parameters = Scaling_Parameters;
-        TrainingParameters.feature_scaling_FFCthod = feature_scaling_FFCthod;
+        TrainingParameters.feature_scaling_method = feature_scaling_method;
         TrainingParameters.hiddenSize = hiddenSize;
         
 end
