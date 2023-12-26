@@ -159,12 +159,6 @@ if ~isempty(Param_Names)
     dlg_title = 'Parameters for feature extraction functions';
     str_cmd = PromptforParameters_text_for_eval_FFC(Param_Names,Param_Description,Default_Value,dlg_title);
     eval(str_cmd);
-    
-    if ~success
-        ErrorMsg = 'Process is aborted. Fragmentation parameters are not specified.';
-        return;
-    end
-    
 end
 
 %% Check Parameters for Feature Calculation

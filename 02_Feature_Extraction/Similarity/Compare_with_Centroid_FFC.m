@@ -44,7 +44,7 @@ BFD = BFD(1:256);
 CosineSimilarity = (BFD*centroid_mu')/(sqrt(sum(BFD.^2))*sqrt(sum(centroid_mu.^2)));
 
 %% Mahalanobis Distance
-MahalanobisDistance = sqrt(sum((BFD-centroid_mu).^2/(0.01+centroid_sigma.^2))); % Smoothing factor 0.01
+MahalanobisDistance = sqrt(sum((BFD-centroid_mu).^2./(0.01+centroid_sigma.^2))); % Smoothing factor 0.01
 
 %% Output
 output = [CosineSimilarity MahalanobisDistance];

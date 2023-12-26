@@ -2,7 +2,7 @@ function Main_FFC
 
 % This function is the main function of Fragments-Expert software.
 %
-% Copyright (C) 2021 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
+% Copyright (C) 2023 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir>
 %
 % This file is a part of Fragments-Expert software, a software package for
 % feature extraction from file fragments and classification among various file formats.
@@ -20,6 +20,10 @@ function Main_FFC
 %   2020-Mar-01   function was created
 %   2020-Oct-19   A waiting message is shown when a menu button is pushed, so the user knows that the process is not finished yet
 %   2021-Jan-03   Feature_Transfrom_FFC and DM_Feature_Transfrom_FFC were defined and included
+%   2021-Jan-03   Feature_Transfrom_FFC and DM_Feature_Transfrom_FFC were defined and included
+%   2023-Oct-29   "Plot Feature 2D-Histogram" was defined and included
+%   2023-Dec-23   "Generate CSV Dataset from Generic Binary Files of Fragments Using Parallel Processing" was defined and included
+%   2023-Dec-25   Converting between *.dat and *.csv fragments dataset was defined
 
 %% Initialization
 global Main_FFC_fig
@@ -36,7 +40,7 @@ global DecisionMachine_FFC_Name_TextBox DecisionMachine_FFC_Validation_TextBox V
 global TestResults_FFC_Name_TextBox View_TestResults_PushButton_FFC
 global CrossValidationResults_FFC_Name_TextBox View_CrossValidationResults_PushButton_FFC
 
-ver = '1.2';
+ver = '2.0';
 
 currentFolder = which('Main_FFC.m');
 currentFolder(strfind(currentFolder,'Main_FFC.m')-1:end) = [];
@@ -157,6 +161,9 @@ uimenu(Dataset_Menu,'Label','Random Permutation of Dataset','Callback',@RunMetho
 uimenu(Dataset_Menu,'Label','Expand Dataset','Callback',@RunMethodsforMenus_FFC);
 uimenu(Dataset_Menu,'Label','Merge Labels in Dataset','Callback',@RunMethodsforMenus_FFC);
 uimenu(Dataset_Menu,'Label','Select Sub-Dataset','Callback',@RunMethodsforMenus_FFC);
+uimenu(Dataset_Menu,'Label','Convert Dataset of Fragments from *.CSV to *.DAT','Callback',@RunMethodsforMenus_FFC,'Separator','on');
+uimenu(Dataset_Menu,'Label','Convert Dataset of Fragments from *.DAT to *.CSV','Callback',@RunMethodsforMenus_FFC,'Separator','of');
+uimenu(Dataset_Menu,'Label','Generate CSV Dataset from Generic Binary Files of Fragments Using Parallel Processing','Callback',@RunMethodsforMenus_FFC,'Separator','on');
 uimenu(Dataset_Menu,'Label','Generate Dataset from Generic Binary Files of Fragments','Callback',@RunMethodsforMenus_FFC,'Separator','on');
 uimenu(Dataset_Menu,'Label','Generate Dataset (for Decision Machine) from Generic Binary Files of Fragments','Callback',@RunMethodsforMenus_FFC,'Separator','on');
 uimenu(Dataset_Menu,'Label','Convert Raw Multimedia to Fragments Dataset','Callback',@RunMethodsforMenus_FFC,'Separator','on');
@@ -179,6 +186,7 @@ Visualization_Menu = uimenu('Label','Visualization');
 uimenu(Visualization_Menu,'Label','t-Distributed Stochastic Neighbor Embedding (t-SNE)','Callback',@RunMethodsforMenus_FFC);
 uimenu(Visualization_Menu,'Label','Box Plot of Features','Callback',@RunMethodsforMenus_FFC);
 uimenu(Visualization_Menu,'Label','Plot Feature Histogram','Callback',@RunMethodsforMenus_FFC);
+uimenu(Visualization_Menu,'Label','Plot Feature 2D-Histogram','Callback',@RunMethodsforMenus_FFC);
 uimenu(Visualization_Menu,'Label','Display Samples in Feature Space','Callback',@RunMethodsforMenus_FFC);
 
 %% Define Help Menu and Submenus
@@ -249,8 +257,20 @@ switch get(source,'Label')
     case 'Generate Dataset (for Decision Machine) from Generic Binary Files of Fragments'
         ErrorMsg = Script_GenerateDataset_for_DecisionMachine_FFC;
         
+    case 'Generate CSV Dataset from Generic Binary Files of Fragments Using Parallel Processing'
+        ErrorMsg = Script_Parallel_GenerateDataset_from_FragmentDataset_FFC;
+        
+    case 'Convert Dataset of Fragments from *.CSV to *.DAT'
+        ErrorMsg = Script_ConvertCSVtoDATFragmentDataset_FFC;
+        
+    case 'Convert Dataset of Fragments from *.DAT to *.CSV'  
+        ErrorMsg = Script_ConvertDATtoCSVFragmentDataset_FFC;
+        
     case 'Plot Feature Histogram'
         ErrorMsg = Script_Plot_FeatureHistogram_FFC;
+        
+    case 'Plot Feature 2D-Histogram'
+        ErrorMsg = Script_2D_Histogram_FFC;
         
     case 'Display Samples in Feature Space'
         ErrorMsg = Script_Plot_Samples_in_FeatureSpace_FFC;
@@ -267,7 +287,6 @@ switch get(source,'Label')
     case 'Feature Transformation: Principal Component Analysis (PCA)'
         ErrorMsg = Script_FeatureSelection_with_PCA_FFC;
 
-    otherwise
 end
 
 % Display Error Message

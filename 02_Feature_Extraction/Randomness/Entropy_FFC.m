@@ -1,9 +1,8 @@
 function Outputs = Entropy_FFC(fragment)
 
 % This function returns the entropy value of a given fragment. It also
-% calculates the difference between n-truncated entropy [1] of uniform distribution
+% calculates the difference between n-truncated entropy of uniform distribution
 % and the value of obrained entropy. 
-%   [1] 
 %
 % Copyright (C) 2020 Mehdi Teimouri <mehditeimouri [at] ut.ac.ir> and Zahra
 % Seyedghorban
