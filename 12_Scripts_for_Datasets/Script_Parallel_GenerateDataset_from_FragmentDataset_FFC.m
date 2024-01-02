@@ -757,7 +757,7 @@ fprintf(fid,'The values in each row are: \n');
 for i=1:length(FeatureLabels)
     fprintf(fid,'%s,',FeatureLabels{i});
 end
-fprintf(fid,'Class Label (1,2,...), file identifier of the fragment\n');
+fprintf(fid,'Class Label, file ID\n');
 fprintf(fid,'---------------------------------------------- \n');
 fprintf(fid,'Class Label values are assigned as follows\n');
 for i=1:length(ClassLabels)
