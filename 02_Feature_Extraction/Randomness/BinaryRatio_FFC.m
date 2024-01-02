@@ -34,4 +34,5 @@ bitStream = Byte2Bit_FFC(fragment);
 ZR = sum(bitStream == 0);
 OR = sum(bitStream == 1);
 
-BRO = ZR / OR;
+% Prevent zero division
+BRO = (ZR + 1) / (OR + 1)
