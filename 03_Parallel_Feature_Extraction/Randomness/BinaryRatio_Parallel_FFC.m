@@ -39,5 +39,5 @@ parfor j=1:M
     ZR = sum(bitStream == 0);
     OR = sum(bitStream == 1);
     
-    BRO(j) = ZR / OR;
+    BRO(j) = (ZR + 1) / (OR + 1);
 end
